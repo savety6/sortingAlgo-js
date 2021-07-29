@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            background: rgb(28, 33, 48);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        canvas{
+            background: #22273a;
+            transform: rotateX(180deg);
+        }
+        button{
+            background: linear-gradient(90deg,blue, rgb(255, 0, 85));
+            padding: 10px;
+            border-radius:20%;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <canvas id="canvas" width="1000px" height="500px"></canvas>
+        <br>     
+        <button onclick="randArr()">Random</button>
+        <button onclick="bubbleSort()">bubbleSort</button>
+        <button onclick="selectionSort()">selectionSort</button>
+        <button onclick="insertionSort()">insertionSort</button>
+    </div>
+    <script>
+        /*
+            bubble sort,
+            selection sort
+            insertion sort
+        */
+        var arr = [];
+        var size = 100;//document.getElementById("A").value;
+        var bg = '#22273a';
+        var color = "#10d8ea"
+        var selectColor = '#ff6100'
+        var c = document.getElementById("canvas");
+		var ctx = c.getContext("2d");
+        var time = 100;//document.getElementById("J").value;
+
+
+        
+		ctx.fillStyle = bg;
+      	ctx.fillRect(0, 0, c.width, c.height);
+        ctx.fillStyle = color;
+
+        for (let i = 0; i <= size; i++) {
+            arr.push(Math.floor(Math.random() * size))
+            //arr.push(i);
+        }
+        function randArr(){
+            for (let i = 0; i < arr.length; i++) {
+                let rand = Math.floor(Math.random() * size);
+                let place = arr[i];
+                arr[i] = arr[rand];
+                arr[rand] = place;
+            }
+            draw();
+        }
+        //console.log(arr);
+        function swap(p1, p2)
+        {
+            let temp = arr[p1];
+            arr[p1] = arr[p2];
+            arr[p2] =temp;
+        }
+        function clean()    
+		{ 
+		    ctx.fillStyle = bg;
+		    ctx.clearRect(0, 0, c.width, c.height);
+			ctx.fillRect(0, 0, c.width, c.height);
+            ctx.fillStyle = color;
+		}
+        function draw(id)
+		{
+            clean();
+            for (let i = 0; i < arr.length; i++) {
+                if(id == i){
+                    ctx.fillStyle = selectColor;
+                    ctx.fillRect(i*10,0,5,(arr[i] * 10)/2);
+                    ctx.fillStyle = color;
+                }else{
+                    ctx.fillRect(i*10,0,5,(arr[i] * 10)/2);
+                }
+            }
+        }
+        function check(){
+            for(let i = 0; i < arr.length; i++){                
+                if(arr[i+1]<arr[i]){
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+        function wait(ms){
+            return new Promise(resolve => {
+                setTimeout(()=>{resolve('')}, ms);
+            })
+        }
+        async function bubbleSort()
+		{
+            while(check()){
+                    for(let i = 0; i < arr.length; i++){                
+                        if(arr[i+1]<arr[i]){
+                            swap(i, i+1)
+                            draw(i); 
+                            await wait(time);
+                        }
+                    }
+            }
+            draw();
+        }
+        async function selectionSort()
+        {
+            var min_idx;
+        
+            // One by one move boundary of unsorted subarray
+            for (var i = 0; i < arr.length; i++)
+            {
+                // Find the minimum element in unsorted array
+                min_idx = i;
+                for (var j = i + 1; j < arr.length; j++)
+                if (arr[j] < arr[min_idx])
+                    min_idx = j;
+        
+                // Swap the found minimum element with the first element
+                swap(min_idx, i);
+                draw(min_idx);
+                await wait(time);
+            }
+        }
+        // Function to sort an array using insertion sort
+        async function insertionSort() 
+        { 
+            let key; 
+            for (let i = 1; i < arr.length; i++)
+            { 
+                key = arr[i]; 
+                j = i - 1; 
+        
+                /* Move elements of arr[0..i-1], that are 
+                greater than key, to one position ahead 
+                of their current position */
+                while (j >= 0 && arr[j] > key)
+                { 
+                    arr[j + 1] = arr[j]; 
+                    j = j - 1; 
+                } 
+                arr[j + 1] = key;
+                draw(key)
+                await wait(time); 
+            } 
+        }
+
+
+        draw()
+    </script>
+</body>
+</html>
